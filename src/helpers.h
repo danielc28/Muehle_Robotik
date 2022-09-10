@@ -16,3 +16,11 @@ String convertIntToString(int i){               //Konvertiert Int zu String => f
   return itoa(i, str, 10);
 }
 
+String convertBoolToString(bool b){             //Konvertiert Bool zu String
+  return b ? "true" : "false";
+}
+
+void resetVars(){
+  iRemoved = 999;
+  iAdded = 999;
+}

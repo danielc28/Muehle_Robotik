@@ -1,7 +1,7 @@
 //WLAN-Config
-const char* ssid = "FRITZ!Box 7530 WJ";               //Hier WLAN-Name eintragen
-const char* password = "54609281796841465586";            //Hier Passwort eintragen
-String sServerAdress = "http://192.168.178.23:80/dashboard";    //Ziel URL (http://IP:80/game?)
+const char* ssid = "Keine Verbindung";               //Hier WLAN-Name eintragen
+const char* password = "[Al++Da]";            //Hier Passwort eintragen
+String sServerAdress = "http://192.168.250.50:80/index.html";    //Ziel URL (http://IP:80/game)
 
 //Display-Config
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -28,3 +28,7 @@ String sServerAdress = "http://192.168.178.23:80/dashboard";    //Ziel URL (http
     //[x][4] => xYoffset 0=hoch,1=runter
     int brett[25][5];
 //array 25x5 (25 Steine* SET, X, Y, OffsetX(0=R, 1=L), OffsetY(0=R, 1=L))
+
+void setupPins(){
+    pinMode(LED_BUILTIN, OUTPUT); //Onboard LED
+}

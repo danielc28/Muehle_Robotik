@@ -52,7 +52,7 @@ void setupGame(){
     }
     pinMode(14,OUTPUT); // Relais für Magnet
 
-    digitalWrite(14, LOW);
+    digitalWrite(14, LOW); //Relais aus
 
     //Fertig mit Initialisierung
     xGameInitialized = true;
