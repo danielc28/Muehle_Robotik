@@ -71,6 +71,8 @@ void setupGame(){
 }
 
 void calcGamemove() {
+    resetVars();  //Hilfsvariablen initialisieren
+
     //TODO: iAdded = AUSLESEN BRETT + Vgl. wo ist Stein neu?
     //Dummy:
     iAdded = 10;
@@ -84,9 +86,13 @@ void calcGamemove() {
         //Konnte nicht gesendet werden
         showText("Fehler","Bewegung konnte nicht gesendet werden. Bitte erneut Button drücken");
     }else{
-        //TODO: Spiel-Array mit bewegten Steinen aktualisieren
+        //TODO: Spiel-Array mit bewegten Steinen aktualisieren:
+            // spielArray[iAdded]["set"] = 1;
+            // spielArray[iRemoved]["set"] = 0;
     }
-    
+
+    resetVars(); //Rücksetzen der Hilfsvariablen
+    showText("Hinweis","Bewegung gesendet\n\nWarten auf Gegenspieler...");    
 }
 
 void onButtonRelease(){

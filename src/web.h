@@ -106,9 +106,11 @@ void setupWebserver(){
         AsyncWebParameter* p = request->getParam(i);
         if(p->name() == "removed"){
           iRemoved = convertStringToInt(p->value()); //ID des entfernten Steins
+          //TODO: Spielfeld-Array aktualisieren
           Serial.println(iRemoved);
         } else if (p->name() == "added"){
           iAdded = convertStringToInt(p->value()); //ID des gesetzten Steins
+          //TODO: Spielfeld-Array aktualisieren
           Serial.println(iAdded);
         } else{
           Serial.println("Error");
@@ -117,19 +119,16 @@ void setupWebserver(){
     }
 
     if (iRemoved != 999 && iAdded == 999){
-      //request->send(200, "text/plain", "Spielstein mit ID= "+convertIntToString(iRemoved)+" wurde entfernt.");
-      request->send(200, "text/plain", "ok");
-      showText("Spielstein entfernt","Position "+convertIntToString(iRemoved));
+      request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
+      showText("Spielstein entfernt","Position "+convertIntToString(iRemoved)+"\n\nDu bist dran...");
     }
     if (iRemoved == 999 && iAdded != 999){
-      //request->send(200, "text/plain", "Spielstein mit ID= "+convertIntToString(iAdded)+" wurde gesetzt.");
-      request->send(200, "text/plain", "ok");
-      showText("Spielstein gesetzt","Position "+convertIntToString(iAdded));
+      request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
+      showText("Spielstein gesetzt","Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
     }
-    if (iRemoved != 999 && iAdded != 999){
-      //request->send(200, "text/plain", "Spielstein wurde von ID= "+convertIntToString(iRemoved)+" nach ID= "+convertIntToString(iAdded)+" bewegt.");
-      request->send(200, "text/plain", "ok");
-      showText("Spielstein bewegt", "Von Position "+convertIntToString(iRemoved)+" nach Position "+convertIntToString(iAdded));
+    if (iRemoved != 999 && iAdded != 999){;
+      request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
+      showText("Spielstein bewegt", "Von Position "+convertIntToString(iRemoved)+" nach Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
     }
 
     resetVars();
