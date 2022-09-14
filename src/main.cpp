@@ -39,11 +39,12 @@ void setup() {
   setupWebserver();
   setupMotor();
   setupGame();
-  
-
 }
 
 void loop() {
+
+  //Umgang mit Button
+  buttonHandling();
 
   //Tests
   test();

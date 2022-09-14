@@ -31,4 +31,5 @@ String sServerAdress = "http://192.168.250.50:80/index.html";    //Ziel URL (htt
 
 void setupPins(){
     pinMode(LED_BUILTIN, OUTPUT); //Onboard LED
+    pinMode(15, INPUT_PULLDOWN); //Eingang Button
 }

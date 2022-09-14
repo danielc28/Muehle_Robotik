@@ -23,11 +23,12 @@ void test(){
 
 
    //Test für URLaufruf nach Spielzugbestätigung => Wenn Button gedrückt wurde
-    pinMode(15,INPUT_PULLDOWN);
-    if(xTest != digitalRead(15) && digitalRead(15) == HIGH){
+   
+    //pinMode(15,INPUT_PULLDOWN);
+    /*if(xTest != digitalRead(15) && digitalRead(15) == HIGH){
         showText("Hinweis","Sende Bewegung an Partner...");
         bool rcSendGamemove = sendGamemove(10,11);
         showText("Hinweis",convertBoolToString(rcSendGamemove));
     }
-    xTest == digitalRead(15);
+    xTest == digitalRead(15);*/
 }

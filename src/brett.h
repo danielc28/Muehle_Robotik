@@ -1,5 +1,18 @@
+// für initializePosition():
 bool xReferenced = false;
+
+// für switchMagnetState():
 bool xMagnetEnabled = false;
+
+// für handleButton():
+int bounceTime = 50;
+int holdTime = 500;     // Zeit bis als Button gehalten erkannt
+int doubleTime = 1000;  // Zeit für Doppelklick
+int lastButtonReading = LOW;
+int hold = 0;
+int single = 0;
+long onTime = 0;
+long lastSwitchTime = 0;
 
 void initializePosition(){
     bool xXref = false;
@@ -56,4 +69,55 @@ void setupGame(){
 
     //Fertig mit Initialisierung
     xGameInitialized = true;
+}
+
+void onButtonRelease(){
+    if ((millis() - lastSwitchTime)>= doubleTime){
+        single = 1;
+        lastSwitchTime = millis();
+        return;
+    }
+
+    if((millis() - lastSwitchTime) < doubleTime){
+        //Funktion für Doppelklick
+        showText("Hinweis", "Doppelklick");
+        single = 0;
+        lastSwitchTime = millis();
+    }
+}
+
+void buttonHandling(){
+    int buttonReading = digitalRead(15);
+
+    //Gedrückt
+    if(buttonReading == HIGH && lastButtonReading == LOW){
+        onTime = millis();
+    }
+
+    //Gehalten
+    if(buttonReading == HIGH && lastButtonReading == HIGH){
+        if((millis() - onTime) > holdTime){
+            hold = 1;
+        }
+    }
+
+    //Loslassen
+    if(buttonReading == LOW && lastButtonReading == HIGH){
+        if(((millis()- onTime) > bounceTime) && hold != 1){
+            //Auswertung einfacher oder doppelter Klick
+            onButtonRelease();
+        }
+        if(hold == 1){
+            //Funktion für gehalten
+            showText("Hinweis", "gehalten");
+            hold = 0;
+        }
+    }
+    lastButtonReading = buttonReading;
+
+    if(single == 1 && (millis() - lastSwitchTime) > doubleTime){
+        //Funktion für einfachen Druck
+        showText("Hinweis","Einfacher Klick");
+        single = 0;
+    }
 }
