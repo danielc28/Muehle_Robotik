@@ -1,7 +1,7 @@
 //WLAN-Config
 const char* ssid = "Keine Verbindung";               //Hier WLAN-Name eintragen
 const char* password = "[Al++Da]";            //Hier Passwort eintragen
-String sServerAdress = "http://192.168.250.50:80/index.html";    //Ziel URL (http://IP:80/game)
+String sServerAdress = "http://192.168.250.50:80/game/index.php";    //Ziel URL (http://IP:80/game)
 
 //Display-Config
 #define SCREEN_WIDTH 128 // OLED display width, in pixels

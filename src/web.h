@@ -94,8 +94,8 @@ void setupWebserver(){
     request->send(200, "text/plain", "Verfahre \n X: "+convertIntToString(iXval)+" - Y: "+convertIntToString(iYval));
   });
 
-  //on /game
-  server.on("/game", HTTP_GET, [](AsyncWebServerRequest *request){
+  //on /game/index.php
+  server.on("/game/index.php", HTTP_GET, [](AsyncWebServerRequest *request){
     resetVars();  //Damit geprüft werden kann, ob beide oder nur ein Teil der Variablen gesetzt wurden
  
     int paramsNr = request->params();
@@ -133,7 +133,7 @@ void setupWebserver(){
     if (iRemoved != 999 && iAdded != 999){;
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein bewegt", "Von Position "+convertIntToString(iRemoved)+" nach Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
-      
+
       player = true; //Damit Spielzüge gesendet werden können
     }
 
