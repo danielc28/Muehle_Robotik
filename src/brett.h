@@ -63,12 +63,30 @@ void setupGame(){
     if (xReferenced == false){
         initializePosition();
     }
-    pinMode(14,OUTPUT); // Relais für Magnet
 
     digitalWrite(14, LOW); //Relais aus
 
     //Fertig mit Initialisierung
     xGameInitialized = true;
+}
+
+void calcGamemove() {
+    //TODO: iAdded = AUSLESEN BRETT + Vgl. wo ist Stein neu?
+    //Dummy:
+    iAdded = 10;
+    //TODO: iRemoved = AUSLESEN BRETT + Vgl. wo ist Stein weg
+    //Dummy:
+    iRemoved = 11;
+
+    showText("Hinweis","Sende Bewegung an Partner...");
+    bool rcSendGamemove = sendGamemove(iAdded,iRemoved);
+    if(rcSendGamemove == false){
+        //Konnte nicht gesendet werden
+        showText("Fehler","Bewegung konnte nicht gesendet werden. Bitte erneut Button drücken");
+    }else{
+        //TODO: Spiel-Array mit bewegten Steinen aktualisieren
+    }
+    
 }
 
 void onButtonRelease(){
@@ -81,6 +99,7 @@ void onButtonRelease(){
     if((millis() - lastSwitchTime) < doubleTime){
         //Funktion für Doppelklick
         showText("Hinweis", "Doppelklick");
+        //TODO: Was soll bei Doppelklick passieren?
         single = 0;
         lastSwitchTime = millis();
     }
@@ -109,7 +128,9 @@ void buttonHandling(){
         }
         if(hold == 1){
             //Funktion für gehalten
-            showText("Hinweis", "gehalten");
+            showText("Hinweis", "Spiel wird neu initialisiert");
+            xGameInitialized = false;
+            xReferenced = false;
             hold = 0;
         }
     }
@@ -117,7 +138,7 @@ void buttonHandling(){
 
     if(single == 1 && (millis() - lastSwitchTime) > doubleTime){
         //Funktion für einfachen Druck
-        showText("Hinweis","Einfacher Klick");
+        calcGamemove();
         single = 0;
     }
 }

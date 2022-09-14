@@ -30,6 +30,7 @@ String sServerAdress = "http://192.168.250.50:80/index.html";    //Ziel URL (htt
 //array 25x5 (25 Steine* SET, X, Y, OffsetX(0=R, 1=L), OffsetY(0=R, 1=L))
 
 void setupPins(){
-    pinMode(LED_BUILTIN, OUTPUT); //Onboard LED
-    pinMode(15, INPUT_PULLDOWN); //Eingang Button
+    pinMode(LED_BUILTIN, OUTPUT);   //Onboard LED
+    pinMode(15, INPUT_PULLDOWN);    //Eingang Button
+    pinMode(14,OUTPUT);             // Relais für Magnet
 }
