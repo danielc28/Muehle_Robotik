@@ -121,14 +121,20 @@ void setupWebserver(){
     if (iRemoved != 999 && iAdded == 999){
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein entfernt","Position "+convertIntToString(iRemoved)+"\n\nDu bist dran...");
+      
+      player = true; //Damit Spielzüge gesendet werden können
     }
     if (iRemoved == 999 && iAdded != 999){
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein gesetzt","Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
+
+      player = true; //Damit Spielzüge gesendet werden können
     }
     if (iRemoved != 999 && iAdded != 999){;
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein bewegt", "Von Position "+convertIntToString(iRemoved)+" nach Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
+      
+      player = true; //Damit Spielzüge gesendet werden können
     }
 
     resetVars();

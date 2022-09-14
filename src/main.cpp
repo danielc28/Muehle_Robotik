@@ -1,6 +1,7 @@
 //Variablen
 int iRemoved;                                   //Hier werden die GET-Parameter der URL drin abgespeichert => Damit kann nachher weitergearbeitet werden
 int iAdded;                                     //Hier werden die GET-Parameter der URL drin abgespeichert => Damit kann nachher weitergearbeitet werden
+bool player = true;                             //Wer ist gerade am Zug? 0 = Nein (Es können keine Spielzüge gesendet werden); 1 = Ja (Es können Spielzüge gesendet werden) - Am Start beide Partner = true
 int iXpos = 999999;
 int iYpos = 999999;
 bool xGameInitialized = false;
