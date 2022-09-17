@@ -2,7 +2,7 @@
 <?php
 
 //Vars
-$pathGamefile = 'C:\Program Files\xampp\htdocs\game.txt';
+$pathGamefile = 'C:\Program Files\xampp\htdocs\game\game.txt';
 
 
 //Spielarray-Datei erzeugen
@@ -18,6 +18,10 @@ if(!file_exists($pathGamefile)){
 
 
 if(isset($_GET['added']) && isset($_GET['removed'])){
+    //Falls Formular benutzt wurde
+    if(isset($_GET['send'])){
+
+    }
     $spielArray[$_GET['added']] = intval(1);
     $spielArray[$_GET['removed']] = intval(0);
     file_put_contents($pathGamefile,serialize($spielArray));
@@ -45,6 +49,7 @@ if(isset($_GET['added']) && isset($_GET['removed'])){
 ?>
 <?php if(!isset($_GET['hidden']) && !(isset($_GET['added']) || isset($_GET['removed']))) :?>
     <html>
+        <meta http-equiv="refresh" content="10" >
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -118,15 +123,49 @@ if(isset($_GET['added']) && isset($_GET['removed'])){
                     <td <?=$spielArray[24] == intval(1)? 'class="table-dark"' : ''?>><center><?=$spielArray[24] == intval(1)? '<button type="button" class="btn btn-danger" id="remove_24" type="button" data-value1="24">' : '<button type="button" class="btn btn-success" id="add_24" type="button" data-value1="24">'?>24</button> </center></td>
                 </tr>
             </table>
+            <hr>
+            <form method="get" action="" id="moveForm">
+                <div class="row">
+                    <input type="hidden" name="send" value="1">
+                    <div class="col-auto">
+                        <label for="von" class="form-label">Von Position:</label>
+                        <input type="number" min="0" max ="24" class="form-control" id="removed" name="removed">
+                    </div>
+                    <div class="col-auto">
+                        <label for="nach" class="form-label">Nach Position:</label>
+                        <input type="number" min="0" max ="24" class="form-control" id="added"  name="added">
+                    </div>
+                    <div class="col-auto">
+                        <input type="submit" class="btn btn-primary">
+                    </div>
+                </div>
+            </form>
+            <hr>
+            Spielfeld wird alle 10 Sekunden automatisch aktualisiert...
         </div>
         
         <script>
             $(document).ready(function(){
+                $("#moveForm").submit(function(e){
+                    e.preventDefault();
+                    console.log('http://192.168.250.78/game/index.php?' + $("#moveForm").serialize());
+                    $.get('http://192.168.250.78/game/index.php?' + $("#moveForm").serialize(),function(data, status){
+                            alert("Data: " + data + "\nStatus: " + status);
+                        });
+                    $.post('http://localhost/game/index.php?hidden=1',{
+                        added: document.getElementById('added').value,
+                        removed: document.getElementById('removed').value
+                    })
+                    .done(function(data) {
+                        //location.reload();
+                    });
+                })
                 <?php foreach($spielArray as $key => $entry) :?>
                     $('#add_<?=$key?>').on('click', function(e) {
                         var added = String(document.getElementById('add_<?=$key?>').dataset.value1);
                         console.log('http://192.168.250.78/game/index.php?added=' + added);
-                        $.post('http://192.168.250.78/game/index.php?added=' + added, {
+                        $.get('http://192.168.250.78/game/index.php?added=' + added, function(data, status){
+                            alert("Data: " + data + "\nStatus: " + status);
                         });
                         $.post('/game/index.php?hidden=1', {
                             added: added
@@ -137,14 +176,15 @@ if(isset($_GET['added']) && isset($_GET['removed'])){
                     });
                     $('#remove_<?=$key?>').on('click', function(e) {
                         var removed = String(document.getElementById('remove_<?=$key?>').dataset.value1);
-                        console.log(removed);
-						$.post('http://192.168.250.78/game/index.php?removed=' + removed, {
+                        console.log('http://192.168.250.78/game/index.php?removed=' + removed);
+						$.get('http://192.168.250.78/game/index.php?removed=' + removed, function(data, status){
+                            alert("Data: " + data + "\nStatus: " + status);
                         });
                         $.post('/game/index.php?hidden=1', {
                             removed: removed
                         })
                         .done(function(data) {
-                            location.reload();
+                            //location.reload();
                         });
                     });
                 <?php endforeach;?>
@@ -152,4 +192,5 @@ if(isset($_GET['added']) && isset($_GET['removed'])){
         </script>
     </html>
 <?php endif;?>
+
 <?=isset($_GET['added']) || isset($_GET['removed']) ? 'ok' : ''?>
