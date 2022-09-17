@@ -148,12 +148,13 @@ void setupWebserver(){
   server.begin();
 }
 
-bool sendGamemove(int iAddedToken, int iRemovedToken){
+int sendGamemove(int iAddedToken, int iRemovedToken){
 
     bool xFirstParam = true;    //Um ersten Parameter mit ? einzuleiten, sonst &-Verkettung
     String sUrlParams="";       //String zum ergänzen der Serveradresse
-    String response = "!ok";    //Um sicherzustellen, dass der Partner den Zug erkannt hat
+    //String response = "!ok";    //Um sicherzustellen, dass der Partner den Zug erkannt hat
     String sServerAdressTemp;   //komplette URL
+    int httpResponseCode = 999; //Responsecode von HTML-Sendevorgang, wird genutzt um erfolgreiches senden zu überprüfen
 
     //Wenn Stein gesetzt
     if(iAddedToken != 999){
@@ -179,17 +180,16 @@ bool sendGamemove(int iAddedToken, int iRemovedToken){
     sServerAdressTemp = sServerAdress + sUrlParams;
 
     //5 Sendeversuche, vor Abbruch
-    for(int i = 0; i<5 && response != "ok";i++){
+    for(int i = 0; i<5 && httpResponseCode != 200;i++){
         http.begin(sServerAdressTemp.c_str());
-        int httpResponseCode = http.GET();
-        response = http.getString();
-        //delay(500);
+        httpResponseCode = http.GET();
+        //response = http.getString();
     }
 
     //Rückgabe
-    if(response == "ok"){
-        return true;
+    if(httpResponseCode == 200){
+        return 1;
     }else{
-        return false;
+        return httpResponseCode;
     }
 }

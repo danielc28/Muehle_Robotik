@@ -82,10 +82,10 @@ void calcGamemove() {
         iRemoved = 11;
 
         showText("Hinweis","Sende Bewegung an Partner...");
-        bool rcSendGamemove = sendGamemove(iAdded,iRemoved);
-        if(rcSendGamemove == false){
+        int rcSendGamemove = sendGamemove(iAdded,iRemoved);
+        if(rcSendGamemove != 1){
             //Konnte nicht gesendet werden
-            showText("Fehler","Bewegung konnte nicht gesendet werden. Bitte erneut Button drücken");
+            showText("Fehler","Bewegung beim Senden. Bitte erneut Button drücken\nCode: " + convertIntToString(rcSendGamemove));
         }else{
             //TODO: Spiel-Array mit bewegten Steinen aktualisieren:
                 // spielArray[iAdded]["set"] = 1;
