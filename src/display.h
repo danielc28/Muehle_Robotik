@@ -347,8 +347,10 @@ void setupDisplay() {
   // Clear the buffer
   display.clearDisplay();
 
+  //show Connecting to WiFi
+  showText("Hinweis","Connecting...\n"+String(ssid));
   // Draw a single pixel in white
-  display.drawPixel(10, 10, SSD1306_WHITE);
+  //display.drawPixel(10, 10, SSD1306_WHITE);
 
   // Show the display buffer on the screen. You MUST call display() after
   // drawing commands to make them visible on screen!

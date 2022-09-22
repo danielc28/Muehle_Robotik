@@ -1,0 +1,70 @@
+void place(int iAdded, iRemoved){
+    int iXmove, iYmove;
+    bool moveError;
+
+    if (iRemoved != 999 && iAdded == 999) { //entfernen: Stein zu Parkposition fahren
+        //zu Stein fahren, der entfernt wird
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3], spielbrett[iRemoved][2]+spielbrett[iRemoved][4]);
+
+        //Magnet einschalten
+        switchMagnetState();
+        
+        //Offset verschieben
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][3], spielbrett[iRemoved][4]);
+
+        //Weg berechnen
+        iXmove = (spielbrett[iRemoved][1]-iXpos);
+        iYmove = (spielbrett[iRemoved][2]-iYpos);
+
+        //mit Stein verfahren
+        moveError = calcDirectionAndMove(iXmove, iYmove);
+        
+        //negatives Offset verschieben auf Parkposition
+        moveError = calcDirectionAndMove((-1)*spielbrett[0][3], (-1)*spielbrett[0][4]);
+        
+        //Magnet ausschalten
+        switchMagnetState();
+    }else if (iRemoved == 999 && iAdded != 999) { //Hinzufügen: Parkposition nach Position fahren
+        //zu  Parkposition fahren
+        moveError = calcDirectionAndMove(-iXpos, -iYpos);
+    
+        //Magnet einschalten
+        switchMagnetState();
+        
+        //Versatz Parkpositon fahren
+        moveError = calcDirectionAndMove(spielbrett[0][3], spielbrett[0][4]);
+
+        //Weg berechnen und verfahren (ohne Offset)
+        iXmove = (spielbrett[iAdded][1]-iXpos);
+        iYmove = (spielbrett[iAdded][2]-iYpos);
+        moveError = calcDirectionAndMove(iXmove, iYmove);
+
+        //Offset zurückfahren
+        moveError = calcDirectionAndMove((-1)*spielbrett[iAdded][3], (-1)*spielbrett[iAdded][4]);
+        
+        //Magnet ausschalten
+        switchMagnetState();
+    }else if (iRemoved == 999 && iAdded == 999){ //Spielstein von A nach B fahren
+        //Unter Removed-Stein fahren
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3], spielbrett[iRemoved][2]+spielbrett[iRemoved][4]);
+
+        //Magnet einschalten
+        switchMagnetState();
+        
+        //Offset verfahren
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][3], spielbrett[iRemoved][4]);
+        
+        //Weg berechnen und verfahren
+        iXmove = (spielbrett[iAdded][1]-spielbrett[iRemoved][1]);
+        iYmove = (spielbrett[iAdded][2]-spielbrett[iRemoved][2]);
+        moveError = calcDirectionAndMove(iXmove, iYmove);
+
+        //Versatz rückwärtsfahren
+        moveError = calcDirectionAndMove((-1)*spielbrett[iAdded][3], (-1)*spielbrett[iAdded][4]);
+
+        //Magnet ausschalten
+        switchMagnetState();
+    }else{
+        //Error
+    }
+}

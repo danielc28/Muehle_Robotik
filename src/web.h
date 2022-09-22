@@ -6,7 +6,6 @@ AsyncWebServer server(80);                      //Webserver auf Port 80 starten
 HTTPClient http;
 
 
-
 void setupWebserver(){
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -45,53 +44,20 @@ void setupWebserver(){
   //on control - Manuelle Steuerung
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request){
     int paramsNr = request->params();
-    String direction;
-    String sServerAdressTemp;
-    bool xFirstParam=true;
-    int iXval = 0;
-    int iYval = 0;
-    String response = "!ok";
 
     for(int i=0;i<paramsNr;i++){
         AsyncWebParameter* p = request->getParam(i);
         if(p->name() == "x"){
-            if(convertStringToInt(p->value()) > 0){
-                direction = "rechts";
-            }else{
-                direction = "links";
-            }
-            iXval = convertStringToInt(p->value());
-            move(abs(convertStringToInt(p->value())),direction);
-            if(xFirstParam == true){
-                sServerAdressTemp = sServerAdress+"?x1="+p->value();
-                xFirstParam = false;
-            }else{
-                sServerAdressTemp = sServerAdressTemp+"&x1="+p->value();
-            }
+            xAcknowledgeX = true;
+            iRemoved = convertStringToInt(p->value()); //Missbrauch iRemoved für Schritteanzahl x-Richtung
         }
         if (p->name() == "y"){
-            if(convertStringToInt(p->value()) > 0){
-                direction = "oben";
-            }else{
-                direction = "unten";
-            }
-            iYval = convertStringToInt(p->value());
-            move(abs(convertStringToInt(p->value())),direction);
-            if(xFirstParam == true){
-                sServerAdressTemp = sServerAdress+"?y1="+p->value();
-                xFirstParam = false;
-            }else{
-                sServerAdressTemp = sServerAdressTemp+"&y1="+p->value();
-            }
+            xAcknowledgeY = true;
+            iAdded = convertStringToInt(p->value()); //Missbrauch iAdded für Schritteanzahl y-Richtung
         }
     }
-    while(response != "ok"){
-        http.begin(sServerAdressTemp.c_str());
-        int httpResponseCode = http.GET();
-        response = http.getString();
-        //delay(500);
-    }
-    request->send(200, "text/plain", "Verfahre \n X: "+convertIntToString(iXval)+" - Y: "+convertIntToString(iYval));
+
+    request->send(200, "text/plain", "Verfahre \n X: "+convertIntToString(iRemoved)+" - Y: "+convertIntToString(iAdded));
   });
 
   //on /game/index.php
@@ -121,23 +87,24 @@ void setupWebserver(){
     if (iRemoved != 999 && iAdded == 999){
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein entfernt","Position "+convertIntToString(iRemoved)+"\n\nDu bist dran...");
-      
+      xAcknowledgedRemove = true;
+      //place(iAdded,iRemoved); //Fahren
       player = true; //Damit Spielzüge gesendet werden können
     }
     if (iRemoved == 999 && iAdded != 999){
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein gesetzt","Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
-
+      xAcknowledgedAdd = true;
+      //place(iAdded,iRemoved); //Fahren
       player = true; //Damit Spielzüge gesendet werden können
     }
     if (iRemoved != 999 && iAdded != 999){;
       request->send(200, "text/plain", "ok"); //Dadurch weiß Partner, dass Spielzug erkannt wurde
       showText("Spielstein bewegt", "Von Position "+convertIntToString(iRemoved)+" nach Position "+convertIntToString(iAdded)+"\n\nDu bist dran...");
-
+      xAcknowledgedMove = true;
+      //place(iAdded,iRemoved); //Fahren
       player = true; //Damit Spielzüge gesendet werden können
     }
-
-    resetVars();
   });
  
   //Abfangen von unbekannten Anfragen

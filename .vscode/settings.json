@@ -51,6 +51,7 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "motor.h": "c",
-        "test.h": "c"
+        "test.h": "c",
+        "ökjökj": "c"
     }
 }

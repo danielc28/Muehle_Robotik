@@ -1,8 +1,4 @@
-// für initializePosition():
-bool xReferenced = false;
 
-// für switchMagnetState():
-bool xMagnetEnabled = false;
 
 // für handleButton():
 int bounceTime = 50;
@@ -17,69 +13,83 @@ long lastSwitchTime = 0;
 void initializePosition(){
     bool xXref = false;
     bool xYref = false;
-    move(4,"links"); // 2 Schritte links
+    calcDirectionAndMove(-4,0); // 4 Schritte links
     delay(1000);
     while (digitalRead(5) == LOW)
     {
-        move(5,"unten"); //5 Schritte runter
+        calcDirectionAndMove(0,-5); //5 Schritte runter
     }
 
     if(digitalRead(5) == HIGH){
         xYref = true;
-        move(10,"hoch");
+        calcDirectionAndMove(0,10);
         iYpos = -630;
     }
 
     while (digitalRead(23) == LOW){
-        move(10,"rechts"); //1 Schritt rechts)
+        calcDirectionAndMove(10,0); //10 Schritt rechts)
     }
 
     if(digitalRead(23) == HIGH){
         xXref = true;
-        move(10,"links");
+        calcDirectionAndMove(-10,0);
         iXpos = 630;
     }
 
     if ((xXref == HIGH) && (xYref == HIGH)){
 
         //Damit auf Parkposition in die Mitte (0/0)
-        move(630,"links"); //Fahre x-Ebene auf Höhe Parkposition
-        move(630,"oben"); //Fahre y-Ebene auf Höhe Parkposition
+        calcDirectionAndMove(-630,630); //Fahre x- und y-Ebene auf Höhe Parkposition
         xReferenced = true;
     }
 }
 
-void switchMagnetState(){
-    if(xMagnetEnabled){
-        digitalWrite(14, LOW);
-        xMagnetEnabled = false;
-    }else{
-        digitalWrite(14,HIGH);
-        xMagnetEnabled = true;
-    }
-}
-
 void setupGame(){
+
+    digitalWrite(14, LOW); //Relais aus
+    
     if (xReferenced == false){
         initializePosition();
     }
 
-    digitalWrite(14, LOW); //Relais aus
+    
 
     //Fertig mit Initialisierung
     xGameInitialized = true;
 }
 
+int compareState(bool test){
+    for (int i = 1; i < sizeof(aktuell)/sizeof(int); i++){ 
+        if ((aktuell[i] ^ spielbrett[i][0]) == 1){
+            if(aktuell[i] == 1 && test == true){  
+                return i;
+            }else if (test == false){
+                return i;
+            }
+        }
+    }
+    return 999;
+}
+
+void readBoard(){
+    int k = 0;
+    for (int i = 0 ; i < (sizeof(output_CS)/sizeof(int)) ; i++ ){
+        digitalWrite(output_CS[i], HIGH); 
+        for (int j = 0; j < (sizeof(inputs_CS)/sizeof(int)); j++){
+            aktuell[k] = convertBoolToInt(digitalRead(inputs_CS[j]));
+            k++;
+        }
+        digitalWrite(output_CS[i], LOW); 
+    }
+}
+
 void calcGamemove() {
     if(player == true){
         resetVars();  //Hilfsvariablen initialisieren
+        readBoard(); //Brett auslesen
 
-        //TODO: iAdded = AUSLESEN BRETT + Vgl. wo ist Stein neu?
-        //Dummy:
-        iAdded = 10;
-        //TODO: iRemoved = AUSLESEN BRETT + Vgl. wo ist Stein weg
-        //Dummy:
-        iRemoved = 11;
+        iAdded = compareState(1); //Wo wurde ein Stein hinzugefügt
+        iRemoved = compareState(0); //Wo wurde ein Stein hinzugefügt
 
         showText("Hinweis","Sende Bewegung an Partner...");
         int rcSendGamemove = sendGamemove(iAdded,iRemoved);
@@ -87,9 +97,8 @@ void calcGamemove() {
             //Konnte nicht gesendet werden
             showText("Fehler","Bewegung beim Senden. Bitte erneut Button drücken\nCode: " + convertIntToString(rcSendGamemove));
         }else{
-            //TODO: Spiel-Array mit bewegten Steinen aktualisieren:
-                // spielArray[iAdded]["set"] = 1;
-                // spielArray[iRemoved]["set"] = 0;
+            spielbrett[iAdded][0] = 1;
+            spielbrett[iRemoved][0] = 0;
             showText("Hinweis","Bewegung gesendet\n\nWarten auf Gegenspieler...");
 
             player = false; //Versenden von Spielzügen wird gesperrt
@@ -152,3 +161,4 @@ void buttonHandling(){
         single = 0;
     }
 }
+
