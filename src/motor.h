@@ -181,80 +181,73 @@ void place(int iAdded, int iRemoved){
         Serial.println("");
         Serial.print("Entfernt");
         //zu Stein fahren, der entfernt wird
-        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3], spielbrett[iRemoved][2]+spielbrett[iRemoved][4]);
-
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3]-iXpos, spielbrett[iRemoved][2]+spielbrett[iRemoved][4]-iYpos);
+delay(1000);
         //Magnet einschalten
         switchMagnetState();
         
         //Offset verschieben
-        moveError = calcDirectionAndMove(spielbrett[iRemoved][3], spielbrett[iRemoved][4]);
-
-        //Weg berechnen
-        iXmove = (spielbrett[iRemoved][1]-iXpos);
-        iYmove = (spielbrett[iRemoved][2]-iYpos);
+        moveError = calcDirectionAndMove((-1)*spielbrett[iRemoved][3], (-1)*spielbrett[iRemoved][4]);
+delay(1000);
+        //Weg berechnen zu Parkposition
+        iXmove = (spielbrett[0][1]-iXpos);
+        iYmove = (spielbrett[0][2]-iYpos);
 
         //mit Stein verfahren
         moveError = calcDirectionAndMove(iXmove, iYmove);
-        
+delay(1000);
         //negatives Offset verschieben auf Parkposition
-        moveError = calcDirectionAndMove((-1)*spielbrett[0][3], (-1)*spielbrett[0][4]);
-        
+        moveError = calcDirectionAndMove(spielbrett[0][3], spielbrett[0][4]);
+delay(1000);
         //Magnet ausschalten
         switchMagnetState();
+delay(1000);
     }else if (iRemoved == 999 && iAdded != 999) { //Hinzufügen: Parkposition nach Position fahren
-        Serial.println("");
-        Serial.print("Gesetzt");
+
         //zu  Parkposition fahren
         if(iXpos != 0 && iYpos != 0){
-            Serial.println("");
-            Serial.print("zu Parkposition");
-            moveError = calcDirectionAndMove(-iXpos, -iYpos);
+            moveError = calcDirectionAndMove((-1)*iXpos, (-1)*iYpos);
+delay(1000);
         }
     
         //Magnet einschalten
         switchMagnetState();
-        
+delay(1000);
         //Versatz Parkpositon fahren
-        Serial.println("");
-        Serial.print("Versetzen");
-        moveError = calcDirectionAndMove(spielbrett[0][3], spielbrett[0][4]);
-
+        moveError = calcDirectionAndMove((-1)*spielbrett[0][3], (-1)*spielbrett[0][4]);
+delay(1000);
         //Weg berechnen und verfahren (ohne Offset)
         iXmove = (spielbrett[iAdded][1]-iXpos);
         iYmove = (spielbrett[iAdded][2]-iYpos);
-        Serial.println("");
-        Serial.print("Verfahren");
         moveError = calcDirectionAndMove(iXmove, iYmove);
-
+delay(1000);
         //Offset zurückfahren
-        Serial.println("");
-        Serial.print("Zurückversetzen");
-        moveError = calcDirectionAndMove((-1)*spielbrett[iAdded][3], (-1)*spielbrett[iAdded][4]);
-        
+        moveError = calcDirectionAndMove(spielbrett[iAdded][3], spielbrett[iAdded][4]);
+delay(1000);
         //Magnet ausschalten
         switchMagnetState();
-    }else if (iRemoved == 999 && iAdded == 999){ //Spielstein von A nach B fahren
-        Serial.println("");
-        Serial.print("Bewegt");
+delay(1000);
+    }else if (iRemoved != 999 && iAdded != 999){ //Spielstein von A nach B fahren
         //Unter Removed-Stein fahren
-        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3], spielbrett[iRemoved][2]+spielbrett[iRemoved][4]);
-
+        moveError = calcDirectionAndMove(spielbrett[iRemoved][1]+spielbrett[iRemoved][3]-iXpos, spielbrett[iRemoved][2]+spielbrett[iRemoved][4]-iYpos);
+delay(1000);
         //Magnet einschalten
         switchMagnetState();
-        
+delay(1000);
         //Offset verfahren
-        moveError = calcDirectionAndMove(spielbrett[iRemoved][3], spielbrett[iRemoved][4]);
-        
+        moveError = calcDirectionAndMove((-1)*spielbrett[iRemoved][3], (-1)*spielbrett[iRemoved][4]);
+delay(1000);
         //Weg berechnen und verfahren
         iXmove = (spielbrett[iAdded][1]-spielbrett[iRemoved][1]);
         iYmove = (spielbrett[iAdded][2]-spielbrett[iRemoved][2]);
         moveError = calcDirectionAndMove(iXmove, iYmove);
-
-        //Versatz rückwärtsfahren
-        moveError = calcDirectionAndMove((-1)*spielbrett[iAdded][3], (-1)*spielbrett[iAdded][4]);
-
+delay(1000);
+        //Offset rückwärtsfahren
+        moveError = calcDirectionAndMove(spielbrett[iAdded][3], spielbrett[iAdded][4]);
+delay(1000);
         //Magnet ausschalten
         switchMagnetState();
+delay(1000);
     }else{
         //Error
     }

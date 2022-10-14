@@ -17,7 +17,7 @@ void initializePosition(){
     delay(1000);
     while (digitalRead(5) == LOW)
     {
-        calcDirectionAndMove(0,-5); //5 Schritte runter
+        calcDirectionAndMove(0,-10); //5 Schritte runter
     }
 
     if(digitalRead(5) == HIGH){
@@ -72,15 +72,18 @@ int compareState(bool test){
 }
 
 void readBoard(){
-    int k = 0;
+    digitalWrite(13,HIGH);
+    int k = 1;
     for (int i = 0 ; i < (sizeof(output_CS)/sizeof(int)) ; i++ ){
-        digitalWrite(output_CS[i], HIGH); 
+        digitalWrite(output_CS[i], LOW); 
         for (int j = 0; j < (sizeof(inputs_CS)/sizeof(int)); j++){
             aktuell[k] = convertBoolToInt(digitalRead(inputs_CS[j]));
             k++;
         }
-        digitalWrite(output_CS[i], LOW); 
+        digitalWrite(output_CS[i], HIGH); 
     }
+    aktuell[0] = digitalRead(36);
+    digitalWrite(13,LOW);
 }
 
 void calcGamemove() {
@@ -100,6 +103,7 @@ void calcGamemove() {
             spielbrett[iAdded][0] = 1;
             spielbrett[iRemoved][0] = 0;
             showText("Hinweis","Bewegung gesendet\n\nWarten auf Gegenspieler...");
+            showText("Array 'aktuell'",convertIntToString(aktuell[0])+"-"+convertIntToString(aktuell[1])+"-"+convertIntToString(aktuell[2])+"-"+convertIntToString(aktuell[3])+"-"+convertIntToString(aktuell[4])+"-"+convertIntToString(aktuell[5])+"-"+convertIntToString(aktuell[6])+"-"+convertIntToString(aktuell[7])+"-"+convertIntToString(aktuell[8])+"-"+convertIntToString(aktuell[9])+"-"+convertIntToString(aktuell[10])+"-"+convertIntToString(aktuell[11])+"-"+convertIntToString(aktuell[12])+"-"+convertIntToString(aktuell[13])+"-"+convertIntToString(aktuell[14])+"-"+convertIntToString(aktuell[15])+"-"+convertIntToString(aktuell[16])+"-"+convertIntToString(aktuell[17])+"-"+convertIntToString(aktuell[18])+"-"+convertIntToString(aktuell[19])+"-"+convertIntToString(aktuell[20])+"-"+convertIntToString(aktuell[21])+"-"+convertIntToString(aktuell[22])+"-"+convertIntToString(aktuell[23])+"-"+convertIntToString(aktuell[24]));
 
             player = false; //Versenden von Spielzügen wird gesperrt
         }
@@ -118,6 +122,7 @@ void onButtonRelease(){
     if((millis() - lastSwitchTime) < doubleTime){
         //Funktion für Doppelklick
         showText("Hinweis", "Doppelklick");
+        calcGamemove();
         //TODO: Was soll bei Doppelklick passieren?
         single = 0;
         lastSwitchTime = millis();
